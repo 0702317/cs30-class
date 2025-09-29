@@ -1,35 +1,45 @@
-// Interactive Scene
+// Interactive Scene Project
 // Graham Lindsay
 // September 29th, 2025
-//
+// 
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+let gameState = "game";
 let cam;
 let fov = 50;
 let sens = 0.005;
 let inControl = false;
 let speed = 10;
 let jumpHeight = 50;
-let gravity = 9.81;
+let gravity = 10;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   cam = createCamera();
-  cam.setPosition(400, -400, 800);
+  cam.setPosition(400, -500, 800);
   cam.lookAt(0, -height/2, 0);
   debugMode();
-
 }  
   
 function draw() {
-  background(0, 0, 50);
-  movementKeys();
-  moveCamera();
-  sceneObjects();
+  if (gameState === "start") {
+    background(255, 0, 0);
+  }
+
+  if (gameState === "game") {
+    background(0, 0, 50);
+    movementKeys();
+    moveCamera();
+    sceneObjects();
+  }
 }
 
 function sceneObjects() {
+  push();
+  box(200, 200, 200);
+  pop();
+  
   push();
   rotateX(PI/2);
   fill(150);
@@ -38,22 +48,7 @@ function sceneObjects() {
   pop();
 }
 
-function mouseWheel(event) {
-  if (event.delta > 0) {
-    if (fov < 90) {
-      fov += 3;
-    }
-    perspective(radians(fov));
-  } 
-  else {
-    perspective(radians(fov));
-    if (fov > 20) {
-      fov -= 3;
-    }
-  }
-}
-
-function movementKeys() {
+function movementKeys() { 
   if (keyIsDown(65) === true) {
     cam.move(-speed, 0, 0);
     cam.setPosition(cam.eyeX, -100, cam.eyeZ);
@@ -87,7 +82,22 @@ function moveCamera() {
   }
 }
 
-function mouseClicked() {
+function mouseClicked() { // hides the cursor when the player clicks on the screen
   requestPointerLock();
   inControl = true;
+}
+
+function mouseWheel(event) { // allows the player to zoom in and out using the mouse wheel
+  if (event.delta > 0) {
+    if (fov < 90) {
+      fov += 3;
+    }
+    perspective(radians(fov));
+  } 
+  else {
+    perspective(radians(fov));
+    if (fov > 20) {
+      fov -= 3;
+    }
+  }
 }
