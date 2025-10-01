@@ -36,11 +36,13 @@ function draw() {
 }
 
 function sceneObjects() {
-  push();
-  box(200, 200, 200);
-  pop();
+  for (i = 0; i < 10; i++) {
+    pop();
+    box(200, 200, 200);
+    translate(200, 0, 0);
+    push();
+  }
   
-  push();
   rotateX(PI/2);
   fill(150);
   translate(0, 0, -100);
@@ -51,25 +53,25 @@ function sceneObjects() {
 function movementKeys() { 
   if (keyIsDown(65) === true) {
     cam.move(-speed, 0, 0);
-    cam.setPosition(cam.eyeX, -100, cam.eyeZ);
+    cam.setPosition(cam.eyeX, -300, cam.eyeZ);
   }
 
   if (keyIsDown(68) === true) {
     cam.move(speed, 0, 0);
-    cam.setPosition(cam.eyeX, -100, cam.eyeZ);
+    cam.setPosition(cam.eyeX, -300, cam.eyeZ);
   }
 
   if (keyIsDown(87) === true) {
     cam.move(0, 0, -speed);
-    cam.setPosition(cam.eyeX, -100, cam.eyeZ);
+    cam.setPosition(cam.eyeX, -300, cam.eyeZ);
   }
 
   if (keyIsDown(83) === true) {
     cam.move(0, 0, speed);
-    cam.setPosition(cam.eyeX, -100, cam.eyeZ);
+    cam.setPosition(cam.eyeX, -300, cam.eyeZ);
   }
   
-  if (cam.eyeY < -100) {
+  if (cam.eyeY < -300) {
     cam.move(0, gravity, 0);
   }
 }
