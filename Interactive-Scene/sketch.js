@@ -14,7 +14,7 @@ let speed = 10;
 let jumpHeight = 50;
 let gravity = 10;
 let floorLevel = 300;
-let boxWidth = 200;
+let boxSize = 200;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -38,18 +38,24 @@ function draw() {
 }
 
 function sceneObjects() {
-  for (i = 0; i < 10; i++) {
-    pop();
-    box(200, 200, 200);
-    translate(200, 0, 0);
-    push();
+  push();
+  translate(0, boxSize/2, 0);
+  for (x = 0; x < 4; x++) {
+    translate(boxSize, 0, 0);
+    for (z = 0; z < 4; z ++) {
+      box(boxSize, boxSize, boxSize);
+      translate(0, 0, boxSize);
+      rotateY(radians(180));
+    }
   }
-  
-  rotateX(PI/2);
-  fill(150);
-  translate(0, 0, -100);
-  plane(15000);
   pop();
+  
+  // push();
+  // rotateX(PI/2);
+  // fill(150);
+  // translate(0, 0, -100);
+  // plane(15000);
+  // pop();
 }
 
 function movementKeys() { 
