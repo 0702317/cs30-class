@@ -13,6 +13,8 @@ let inControl = false;
 let speed = 10;
 let jumpHeight = 50;
 let gravity = 10;
+let floorLevel = 300;
+let boxWidth = 200;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -53,34 +55,34 @@ function sceneObjects() {
 function movementKeys() { 
   if (keyIsDown(65) === true) {
     cam.move(-speed, 0, 0);
-    cam.setPosition(cam.eyeX, -300, cam.eyeZ);
+    cam.setPosition(cam.eyeX, -floorLevel, cam.eyeZ);
   }
 
   if (keyIsDown(68) === true) {
     cam.move(speed, 0, 0);
-    cam.setPosition(cam.eyeX, -300, cam.eyeZ);
+    cam.setPosition(cam.eyeX, -floorLevel, cam.eyeZ);
   }
 
   if (keyIsDown(87) === true) {
     cam.move(0, 0, -speed);
-    cam.setPosition(cam.eyeX, -300, cam.eyeZ);
+    cam.setPosition(cam.eyeX, -floorLevel, cam.eyeZ);
   }
 
   if (keyIsDown(83) === true) {
     cam.move(0, 0, speed);
-    cam.setPosition(cam.eyeX, -300, cam.eyeZ);
+    cam.setPosition(cam.eyeX, -floorLevel, cam.eyeZ);
   }
   
-  if (cam.eyeY < -300) {
+  if (cam.eyeY < -floorLevel) {
     cam.move(0, gravity, 0);
   }
 }
 
 function moveCamera() {
   if (inControl === true) {
-    yaw = cam.pan(movedX * -sens);
-    pitch = cam.tilt(movedY * sens);
-    cam.camera(cam.eyeX, cam.eyeY, cam.eyeZ, cam.centerX, cam.centerY, cam.centerZ, 0, 1, 0);
+    yaw = cam.pan(movedX * -sens); // moves the camera left and right with the mouse
+    pitch = cam.tilt(movedY * sens); // moves the camera up and down with the mouse
+    cam.camera(cam.eyeX, cam.eyeY, cam.eyeZ, cam.centerX, cam.centerY, cam.centerZ, 0, 1, 0); // locks the camera in the upright position
   }
 }
 
