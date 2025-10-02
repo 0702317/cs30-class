@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let gameState = "start";
+let gameState = "game";
 let cam;
 let fov = 50;
 let sens = 0.005;
