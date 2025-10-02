@@ -15,15 +15,13 @@ let jumpHeight = 50;
 let gravity = 10;
 let floorLevel = 300;
 let boxSize = 200;
-let worldSize = 64;
-let world = [];
+let worldSize = 32;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   cam = createCamera();
   cam.setPosition(400, -500, 800);
   cam.lookAt(0, -height/2, 0);
-  debugMode();
 }  
   
 function draw() {
@@ -41,14 +39,18 @@ function draw() {
 
 function sceneObjects() {
   push();
-  rotateX(PI/2);
-  fill(150);
-  translate(0, 0, -100);
-  plane(15000);
+  translate(0, boxSize/2, 0);
+  for (x = 0; x < worldSize; x++) {
+    for (z = 0; z < worldSize; z ++) {
+      box(boxSize, boxSize, boxSize);
+      translate(0, 0, boxSize);  
+    }
+    translate(boxSize, 0, -boxSize * worldSize);
+  }
   pop();
 }
 
-function movementKeys() { 
+function movementKeys() { // wasd move controls
   if (keyIsDown(65) === true) {
     cam.move(-speed, 0, 0);
     cam.setPosition(cam.eyeX, -floorLevel, cam.eyeZ);
@@ -69,7 +71,7 @@ function movementKeys() {
     cam.setPosition(cam.eyeX, -floorLevel, cam.eyeZ);
   }
   
-  if (cam.eyeY < -floorLevel) {
+  if (cam.eyeY < -floorLevel) { // moves the player down to floor level
     cam.move(0, gravity, 0);
   }
 }
@@ -89,14 +91,14 @@ function mouseClicked() { // hides the cursor when the player clicks on the scre
 
 function mouseWheel(event) { // allows the player to zoom in and out using the mouse wheel
   if (event.delta > 0) {
-    if (fov < 90) {
+    if (fov < 90) { // increases fov if fov is less than 90
       fov += 3;
     }
     perspective(radians(fov));
   } 
   else {
     perspective(radians(fov));
-    if (fov > 20) {
+    if (fov > 20) { // decreases fov if fov is more than 20
       fov -= 3;
     }
   }
