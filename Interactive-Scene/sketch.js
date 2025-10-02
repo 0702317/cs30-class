@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let gameState = "game";
+let gameState = "start";
 let cam;
 let fov = 50;
 let sens = 0.005;
@@ -15,7 +15,8 @@ let jumpHeight = 50;
 let gravity = 10;
 let floorLevel = 300;
 let boxSize = 200;
-let worldSize = 32;
+let gridSize = 16;
+let gridHeight = 1;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -26,28 +27,31 @@ function setup() {
   
 function draw() {
   if (gameState === "start") {
-    background(255, 0, 0);
+    background(100);
+    cam.lookAt(0, -200, 0);
+    rect(0, 0, 100, 100);
   }
 
   if (gameState === "game") {
     background(0, 0, 50);
     movementKeys();
     moveCamera();
-    sceneObjects();
+    createGrid();
   }
 }
 
-function sceneObjects() {
-  push();
+function createGrid() { // draws the 3d grid
   translate(0, boxSize/2, 0);
-  for (x = 0; x < worldSize; x++) {
-    for (z = 0; z < worldSize; z ++) {
-      box(boxSize, boxSize, boxSize);
-      translate(0, 0, boxSize);  
+  for (y = 0; y < gridHeight; y++) {
+    for (x = 0; x < gridSize; x++) {
+      for (z = 0; z < gridSize; z ++) {
+        box(boxSize, boxSize, boxSize);
+        translate(0, 0, boxSize);  
+      }
+      translate(boxSize, 0, -boxSize * gridSize);
     }
-    translate(boxSize, 0, -boxSize * worldSize);
+    translate(-boxSize * gridSize, boxSize, 0);
   }
-  pop();
 }
 
 function movementKeys() { // wasd move controls
@@ -85,8 +89,10 @@ function moveCamera() {
 }
 
 function mouseClicked() { // hides the cursor when the player clicks on the screen
-  requestPointerLock();
-  inControl = true;
+  if (gameState === "game") {
+    requestPointerLock();
+    inControl = true;
+  }
 }
 
 function mouseWheel(event) { // allows the player to zoom in and out using the mouse wheel
