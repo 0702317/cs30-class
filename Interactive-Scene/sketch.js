@@ -18,6 +18,8 @@ let boxSize = 200;
 let gridSize = 16;
 let gridHeight = 1;
 
+let grid = [];
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   cam = createCamera();
@@ -40,13 +42,13 @@ function draw() {
   }
 }
 
-function createGrid() { // draws the 3d grid
+function createGrid() { // draws the 3d grid using nested loops
   translate(0, boxSize/2, 0);
   for (y = 0; y < gridHeight; y++) {
     for (x = 0; x < gridSize; x++) {
       for (z = 0; z < gridSize; z ++) {
         box(boxSize, boxSize, boxSize);
-        translate(0, 0, boxSize);  
+        translate(0, 0, boxSize);
       }
       translate(boxSize, 0, -boxSize * gridSize);
     }
@@ -78,6 +80,20 @@ function movementKeys() { // wasd move controls
   if (cam.eyeY < -floorLevel) { // moves the player down to floor level
     cam.move(0, gravity, 0);
   }
+
+  if (keyIsDown(32) === true) {
+    push();
+    box(boxSize, boxSize, boxSize);
+    translate(cam.centerX, -floorLevel + boxSize, cam.centerZ);
+    let newBox = {
+      x: cam.centerX,
+      y: -floorLevel + boxSize,
+      z: cam.centerZ,
+    };
+    grid.push(newBox);
+    console.log(grid);
+    pop();
+  }
 }
 
 function moveCamera() {
@@ -88,7 +104,7 @@ function moveCamera() {
   }
 }
 
-function mouseClicked() { // hides the cursor when the player clicks on the screen
+function doubleClicked() { // hides the cursor when the player double clicks the screen
   if (gameState === "game") {
     requestPointerLock();
     inControl = true;
