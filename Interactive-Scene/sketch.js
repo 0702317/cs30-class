@@ -1,6 +1,6 @@
 // Interactive Scene Project
 // Graham Lindsay
-// September 29th, 2025
+// October 3rd, 2025
 // 
 // Extra for Experts:
 //  - Mouse Wheel Interaction: zoom in and out.
@@ -170,7 +170,7 @@ function mouseClicked() {
   inControl = true;
 }
 
-// functuion to allow the player to zoom in and out using the mouse wheel.
+// function to allow the player to zoom in and out using the mouse wheel.
 function mouseWheel(event) {
   if (event.delta > 0) {
     if (fov < maxFov) { // increases fov if fov is less than the max fov.
