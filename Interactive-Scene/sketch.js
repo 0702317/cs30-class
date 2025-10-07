@@ -63,26 +63,26 @@ function draw() {
 // function to create the start screen
 function drawStartScreen() {
   background(50);
-    cam.lookAt(0, 0, 0);
-    text("PRESS ANY KEY TO START", 0, 0)
-    push();
-    textSize(10);
-    translate(0, 50, 0);
-    text("W A S D, to move, up and down arrow to change grid size, left and right arrow to change grid height, and mouse scroll wheel to zoom in and out.", 0, 0);
-    pop();
-    push();
-    textSize(7);
-    translate(0, 75, 0);
-    text("Click the scren to hide cursor.", 0, 0);
-    pop();
+  cam.lookAt(0, 0, 0);
+  text("PRESS ANY KEY TO START", 0, 0)
+  push();
+  textSize(10);
+  translate(0, 50, 0);
+  text("W A S D, to move, up and down arrow to change grid size, left and right arrow to change grid height, and mouse scroll wheel to zoom in and out.", 0, 0);
+  pop();
+  push();
+  textSize(7);
+  translate(0, 75, 0);
+  text("Click the scren to hide cursor.", 0, 0);
+  pop();
 }
 
 // function to generate the 3d grid of boxes using nested loops.
 function createGrid() {
   translate(0, boxSize/2, 0);
-  for (y = 0; y < gridHeight; y++) {
-    for (x = 0; x < gridSize; x++) {
-      for (z = 0; z < gridSize; z ++) {
+  for (let y = 0; y < gridHeight; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      for (let z = 0; z < gridSize; z ++) {
         box(boxSize);
         translate(0, 0, boxSize);
         let pos = createVector(
@@ -123,19 +123,23 @@ function keyInputs() { // wasd move controls and gravity. If I do this again I w
   }
 
   if (keyIsDown(38) === true) { // up arrow increases grid size.
-    gridSize++
+    gridSize++;
+    createGrid();
   }
 
   if (keyIsDown(40) === true) { // down arrow decreases grid size.
     gridSize--;
+    createGrid();
   }
 
   if (keyIsDown(39) === true) { // right arrow increases grid height.
     gridHeight++;
+    createGrid();
   }
 
   if (keyIsDown(37) === true) { // left arrow decreases grid height.
     gridHeight--;
+    createGrid();
   }
 }
 
