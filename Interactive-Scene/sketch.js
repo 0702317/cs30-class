@@ -64,7 +64,7 @@ function draw() {
 function drawStartScreen() {
   background(50);
   cam.lookAt(0, 0, 0);
-  text("PRESS ANY KEY TO START", 0, 0)
+  text("PRESS ANY KEY TO START", 0, 0);
   push();
   textSize(10);
   translate(0, 50, 0);
@@ -89,7 +89,7 @@ function createGrid() {
           x * boxSize,
           y * boxSize,
           z * boxSize,
-        )
+        );
         let newBlock = {
           pos: pos,
         };
