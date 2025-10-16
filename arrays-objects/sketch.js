@@ -6,16 +6,16 @@
 // - describe what you did to take this project "above and beyond"
 
 let theParticles = [];
-const particleDensity = 20;
-const particleSize = 12;
+const PARTICLE_DENSITY = 5;
+const PARTICLE_SIZE = 10;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   // noStroke();
 
   // set up the particle array
-  for (let x = width / (particleDensity + particleSize); x < width - width / (particleDensity + particleSize); x += particleDensity) {
-    for (let y = height / (particleDensity + particleSize); y < height - height / (particleDensity + particleSize); y += particleDensity) {
+  for (let x = 0; x < width; x += PARTICLE_SIZE + PARTICLE_DENSITY) {
+    for (let y = 0; y < height; y += PARTICLE_SIZE + PARTICLE_DENSITY) {
       let someParticle = spawnParticle(x, y);
       theParticles.push(someParticle);
     }
@@ -24,26 +24,30 @@ function setup() {
 
 function draw() {
   background(220);
-  rect(20, 20, width - 40, height - 40);
-
   for (let someParticle of theParticles) {
     fill(someParticle.r, someParticle.g, someParticle.b);
-    circle(someParticle.xPos, someParticle.yPos, particleSize);
+    circle(someParticle.x, someParticle.y, PARTICLE_SIZE);
   }
+  moveParticles();
 }
 
-function spawnParticle(x, y) {
-  let particle;
-
-  particle = {
-    xPos: x,
-    yPos: y,
-    dx: 0,
-    dy: 0,
+function spawnParticle(_x, _y) {
+  let particle = {
+    x: _x,
+    y: _y,
+    dx: random(-3, 3),
+    dy: random(-3, 3),
     r: 255,
     g: 255,
     b: 255,
   };
 
   return particle;
+}
+
+function moveParticles() {
+  for (let particle of theParticles) {
+    particle.x += particle.dx;
+    particle.y += particle.dy;
+  }
 }
