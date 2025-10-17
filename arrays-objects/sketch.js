@@ -7,17 +7,18 @@
 
 let theParticles = [];
 const RECT_MARGIN = 100;
-const PARTICLE_DENSITY = 5;
+const PARTICLE_SPACING = 5;
 const PARTICLE_SIZE = 10;
 const GRAVITY = 3;
+const ENERGY_LOSS = 0.9;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   // noStroke();
 
   // set up the particle array
-  for (let x = 400; x < width - 400; x += PARTICLE_SIZE + PARTICLE_DENSITY) {
-    for (let y = 400; y < height - 400; y += PARTICLE_SIZE + PARTICLE_DENSITY) {
+  for (let x = 400; x < width - 400; x += PARTICLE_SIZE + PARTICLE_SPACING) {
+    for (let y = 400; y < height - 400; y += PARTICLE_SIZE + PARTICLE_SPACING) {
       let someParticle = spawnParticle(x, y);
       theParticles.push(someParticle);  
     }
@@ -43,8 +44,8 @@ function spawnParticle(_x, _y) {
   let particle = {
     x: _x,
     y: _y,
-    dx: random(-3, 3),
-    dy: random(-3, 3),
+    dx: random(-5, 5),
+    dy: random(-5, 5),
     r: 144,
     g: 213,
     b: 255,
@@ -75,11 +76,11 @@ function wallCollisions() {
   for (let particle of theParticles) {
     if (particle.x < RECT_MARGIN + PARTICLE_SIZE || particle.x > width - RECT_MARGIN - PARTICLE_SIZE) {
       particle.dx = -particle.dx;
-      particle.dx = particle.dx * 0.75;
+      particle.dx = particle.dx * ENERGY_LOSS;
     } 
     if (particle.y < RECT_MARGIN + PARTICLE_SIZE || particle.y > height - RECT_MARGIN - PARTICLE_SIZE) {
       particle.dy = -particle.dy;
-      particle.dy = particle.dy * 0.75;
+      particle.dy = particle.dy * ENERGY_LOSS;
     } 
   }
 }
