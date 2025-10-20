@@ -7,10 +7,10 @@
 
 let theParticles = [];
 const RECT_MARGIN = 100;
-const PARTICLE_SPACING = 5;
+const PARTICLE_SPACING = 3;
 const PARTICLE_SIZE = 10;
-const GRAVITY = 3;
-const ENERGY_LOSS = 0.9;
+const GRAVITY = 0.3;
+const ENERGY_LOSS = 0.7;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -44,8 +44,8 @@ function spawnParticle(_x, _y) {
   let particle = {
     x: _x,
     y: _y,
-    dx: random(-5, 5),
-    dy: random(-5, 5),
+    dx: random(-3, 3),
+    dy: random(-3, 3),
     r: 144,
     g: 213,
     b: 255,
@@ -63,6 +63,7 @@ function drawParticles() {
 
 function moveParticles() {
   for (let particle of theParticles) {
+    particle.dy += GRAVITY;
     if (particle.x < width - RECT_MARGIN - PARTICLE_SIZE/2 && particle.x > RECT_MARGIN + PARTICLE_SIZE/2) {
       particle.x += particle.dx;
     }
@@ -76,11 +77,31 @@ function wallCollisions() {
   for (let particle of theParticles) {
     if (particle.x < RECT_MARGIN + PARTICLE_SIZE || particle.x > width - RECT_MARGIN - PARTICLE_SIZE) {
       particle.dx = -particle.dx;
-      particle.dx = particle.dx * ENERGY_LOSS;
     } 
     if (particle.y < RECT_MARGIN + PARTICLE_SIZE || particle.y > height - RECT_MARGIN - PARTICLE_SIZE) {
       particle.dy = -particle.dy;
       particle.dy = particle.dy * ENERGY_LOSS;
+      particle.dx = particle.dx * ENERGY_LOSS;
+      particle.y = height - RECT_MARGIN - PARTICLE_SIZE;
     } 
+  }
+}
+
+function mousePressed() {
+  for (let particle of theParticles) {
+    // if (particle.x > mouseX - random(175) && particle.x < mouseX + random(175)) {
+    //   particle.dy = particle.dy + random(25);
+    // }
+    if (mouseX > RECT_MARGIN && mouseX < width - RECT_MARGIN && mouseY > RECT_MARGIN && mouseY < height - RECT_MARGIN) {
+      if (mouseButton === LEFT) {
+        particle.dy = particle.dy + random(25);
+      }
+      if (mouseButton === CENTER) {
+        particle.x = mouseX + random(-10, 10);
+        particle.y = mouseY + random(-5, 5);
+        particle.dx = particle.dx + random(-6, 6);
+        particle.dy = particle.dy + random(-6, 6);
+      }
+    }
   }
 }
