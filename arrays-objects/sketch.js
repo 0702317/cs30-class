@@ -17,8 +17,8 @@ function setup() {
   // noStroke();
 
   // set up the particle array
-  for (let x = 400; x < width - 400; x += PARTICLE_SIZE + PARTICLE_SPACING) {
-    for (let y = 400; y < height - 400; y += PARTICLE_SIZE + PARTICLE_SPACING) {
+  for (let x = RECT_MARGIN * 4; x < width - RECT_MARGIN * 4; x += PARTICLE_SIZE + PARTICLE_SPACING) {
+    for (let y = RECT_MARGIN * 4; y < height - RECT_MARGIN * 4; y += PARTICLE_SIZE + PARTICLE_SPACING) {
       let someParticle = spawnParticle(x, y);
       theParticles.push(someParticle);  
     }
@@ -36,7 +36,7 @@ function drawUserInterface() {
   background(220);
   push();
   fill(255);
-  rect(100, 100, width - 200, height - 200);
+  rect(RECT_MARGIN, RECT_MARGIN, width - RECT_MARGIN * 2, height - RECT_MARGIN * 2 - PARTICLE_SPACING);
   pop();
 }
 
@@ -46,6 +46,8 @@ function spawnParticle(_x, _y) {
     y: _y,
     dx: random(-3, 3),
     dy: random(-3, 3),
+    // pos: createVector(_x, _y),
+    // vel: createVector(random(-3, 3), random(-3, 3)),
     r: 144,
     g: 213,
     b: 255,
@@ -64,12 +66,8 @@ function drawParticles() {
 function moveParticles() {
   for (let particle of theParticles) {
     particle.dy += GRAVITY;
-    if (particle.x < width - RECT_MARGIN - PARTICLE_SIZE/2 && particle.x > RECT_MARGIN + PARTICLE_SIZE/2) {
-      particle.x += particle.dx;
-    }
-    if (particle.y < height - RECT_MARGIN - PARTICLE_SIZE/2 && particle.y > RECT_MARGIN + PARTICLE_SIZE/2) {
-      particle.y += particle.dy;
-    }
+    particle.x += particle.dx;
+    particle.y += particle.dy;
   }
 }
 
@@ -87,14 +85,15 @@ function wallCollisions() {
   }
 }
 
+function calculateDensity() {
+  // ρ = m/V
+}
+
 function mousePressed() {
   for (let particle of theParticles) {
-    // if (particle.x > mouseX - random(175) && particle.x < mouseX + random(175)) {
-    //   particle.dy = particle.dy + random(25);
-    // }
     if (mouseX > RECT_MARGIN && mouseX < width - RECT_MARGIN && mouseY > RECT_MARGIN && mouseY < height - RECT_MARGIN) {
       if (mouseButton === LEFT) {
-        particle.dy = particle.dy + random(25);
+        particle.dy = particle.dy + random(35);
       }
       if (mouseButton === CENTER) {
         particle.x = mouseX + random(-10, 10);
