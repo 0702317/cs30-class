@@ -10,11 +10,12 @@ const RECT_MARGIN = 100;
 const PARTICLE_SPACING = 3;
 const PARTICLE_SIZE = 10;
 const GRAVITY = 0.45;
-const ENERGY_LOSS = 0.7;
+const ENERGY_LOSS = 0.6;
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  colorMode(HSB);
   // noStroke();
 
   // set up the particle array
@@ -31,7 +32,6 @@ function draw() {
   drawParticles();
   moveParticles();
   wallCollisions();
-  // calculateDensity();
 }
 
 function drawUserInterface() {
@@ -57,9 +57,9 @@ function spawnParticle(_x, _y) {
 }
 
 function drawParticles() {
-  for (let someParticle of theParticles) {
-    fill(someParticle.r, someParticle.g, someParticle.b);
-    circle(someParticle.x, someParticle.y, PARTICLE_SIZE);
+  for (let particle of theParticles) {
+    fill(color(min(100, particle.dx + particle.dy * 5), 255, 255));
+    circle(particle.x, particle.y, PARTICLE_SIZE);
   }
 }
 
@@ -93,9 +93,9 @@ function wallCollisions() {
 function calculateDensity() {
   let density = 0;
   let mass = 1;
-  let distance;
 
   for (let particle of theParticles) {
+    let distance;
     let influence = max(0, 0.5 - distance);
     density += mass * influence;
   }
