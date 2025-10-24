@@ -58,7 +58,8 @@ function spawnParticle(_x, _y) {
 
 function drawParticles() {
   for (let particle of theParticles) {
-    fill(color(min(100, particle.dx + particle.dy * 5), 255, 255));
+    let velocity = Math.sqrt(particle.dy * particle.dy + particle.dx * particle.dx);
+    fill(color(225 - velocity * 10, 255, 255));
     circle(particle.x, particle.y, PARTICLE_SIZE);
   }
 }
