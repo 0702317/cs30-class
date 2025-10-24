@@ -7,6 +7,7 @@
 
 let theParticles = [];
 const RECT_MARGIN = 100;
+const RADIUS = 50;
 const PARTICLE_SPACING = 3;
 const PARTICLE_SIZE = 10;
 const GRAVITY = 0.45;
@@ -111,8 +112,10 @@ function mousePressed() {
         particle.dy = particle.dy + random(35);
       }
       if (mouseButton === CENTER) {
-        particle.x = mouseX + random(-10, 10);
-        particle.y = mouseY + random(-5, 5);
+        r = RADIUS * sqrt(random(0, 1));
+        theta = random(0, 1) * 2 * PI;
+        particle.x = mouseX + r * cos(theta);
+        particle.y = mouseY + r * sin(theta);
         particle.dx = particle.dx + random(-8, 8);
         particle.dy = particle.dy + random(-8, 8);
       }
