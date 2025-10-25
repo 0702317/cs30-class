@@ -8,7 +8,7 @@
 let theParticles = [];
 let isPaused = false;
 const RECT_MARGIN = 100;
-const RADIUS = 50;
+const MOUSE_RADIUS = 50;
 const PARTICLE_SPACING = 20;
 const PARTICLE_SIZE = 20;
 const GRAVITY = 0.45;
@@ -95,17 +95,23 @@ function wallCollisions() {
   }
 }
 
-function calculateDensity() {
-  let density = 0;
-  let mass = 1;
+// function calculateDensity() {
+//   let density = 0;
+//   let mass = 1;
 
-  for (let particle of theParticles) {
-    let distance;
-    let influence = max(0, 0.5 - distance);
-    density += mass * influence;
+//   for (let particle of theParticles) {
+//     let distance;
+//     let influence = max(0, 0.5 - distance);
+//     density += mass * influence;
+//   }
+
+//   return density;
+// }
+
+function keyPressed() {
+  if (keyCode === 32) {
+    isPaused = !isPaused;
   }
-
-  return density;
 }
 
 function mousePressed() {
@@ -116,7 +122,7 @@ function mousePressed() {
           particle.dy = particle.dy + random(35);
         }
         if (mouseButton === CENTER) {
-          r = RADIUS * sqrt(random(0, 1));
+          let r = MOUSE_RADIUS * sqrt(random(0, 1));
           theta = random(0, 1) * 2 * PI;
           particle.x = mouseX + r * cos(theta);
           particle.y = mouseY + r * sin(theta);
@@ -126,8 +132,4 @@ function mousePressed() {
       }
     }
   }
-}
-
-function keyPressed() {
-  isPaused = !isPaused;
 }
