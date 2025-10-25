@@ -6,10 +6,11 @@
 // - describe what you did to take this project "above and beyond"
 
 let theParticles = [];
+let isPaused = false;
 const RECT_MARGIN = 100;
 const RADIUS = 50;
-const PARTICLE_SPACING = 3;
-const PARTICLE_SIZE = 10;
+const PARTICLE_SPACING = 20;
+const PARTICLE_SIZE = 20;
 const GRAVITY = 0.45;
 const ENERGY_LOSS = 0.6;
 
@@ -31,8 +32,10 @@ function setup() {
 function draw() {
   drawUserInterface();
   drawParticles();
-  moveParticles();
   wallCollisions();
+  if (isPaused === false) {
+    moveParticles();
+  }
 }
 
 function drawUserInterface() {
@@ -106,19 +109,25 @@ function calculateDensity() {
 }
 
 function mousePressed() {
-  for (let particle of theParticles) {
-    if (mouseX > RECT_MARGIN && mouseX < width - RECT_MARGIN && mouseY > RECT_MARGIN && mouseY < height - RECT_MARGIN) {
-      if (mouseButton === LEFT) {
-        particle.dy = particle.dy + random(35);
-      }
-      if (mouseButton === CENTER) {
-        r = RADIUS * sqrt(random(0, 1));
-        theta = random(0, 1) * 2 * PI;
-        particle.x = mouseX + r * cos(theta);
-        particle.y = mouseY + r * sin(theta);
-        particle.dx = particle.dx + random(-8, 8);
-        particle.dy = particle.dy + random(-8, 8);
+  if (isPaused === false) {
+    for (let particle of theParticles) {
+      if (mouseX > RECT_MARGIN && mouseX < width - RECT_MARGIN && mouseY > RECT_MARGIN && mouseY < height - RECT_MARGIN) {
+        if (mouseButton === LEFT) {
+          particle.dy = particle.dy + random(35);
+        }
+        if (mouseButton === CENTER) {
+          r = RADIUS * sqrt(random(0, 1));
+          theta = random(0, 1) * 2 * PI;
+          particle.x = mouseX + r * cos(theta);
+          particle.y = mouseY + r * sin(theta);
+          particle.dx = particle.dx + random(-8, 8);
+          particle.dy = particle.dy + random(-8, 8);
+        }
       }
     }
   }
+}
+
+function keyPressed() {
+  isPaused = !isPaused;
 }
