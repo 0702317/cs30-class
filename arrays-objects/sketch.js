@@ -9,8 +9,8 @@ let theParticles = [];
 let isPaused = false;
 const RECT_MARGIN = 100;
 const MOUSE_RADIUS = 50;
-const PARTICLE_SPACING = 20;
-const PARTICLE_SIZE = 20;
+const PARTICLE_SPACING = 15;
+const PARTICLE_SIZE = 10;
 const GRAVITY = 0.45;
 const ENERGY_LOSS = 0.6;
 
@@ -18,7 +18,6 @@ const ENERGY_LOSS = 0.6;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(HSB);
-  // noStroke();
 
   // set up the particle array
   for (let x = RECT_MARGIN * 4; x < width - RECT_MARGIN * 4; x += PARTICLE_SIZE + PARTICLE_SPACING) {
@@ -42,7 +41,7 @@ function drawUserInterface() {
   background(220);
   push();
   fill(255);
-  rect(RECT_MARGIN, RECT_MARGIN, width - RECT_MARGIN * 2, height - RECT_MARGIN * 2 - PARTICLE_SPACING);
+  rect(RECT_MARGIN, RECT_MARGIN, width - RECT_MARGIN * 2, height - RECT_MARGIN * 2 - PARTICLE_SIZE/2);
   pop();
 }
 
@@ -62,7 +61,7 @@ function spawnParticle(_x, _y) {
 
 function drawParticles() {
   for (let particle of theParticles) {
-    let velocity = Math.sqrt(particle.dy * particle.dy + particle.dx * particle.dx);
+    let velocity = sqrt(particle.dy * particle.dy + particle.dx * particle.dx);
     fill(color(225 - velocity * 10, 255, 255));
     circle(particle.x, particle.y, PARTICLE_SIZE);
   }
