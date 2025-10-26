@@ -8,6 +8,7 @@
 
 let theParticles = [];
 let isPaused = false;
+let isGravity = true;
 const RECT_MARGIN = 100;
 const TEXT_SIZE = 50;
 const MOUSE_RADIUS = 50;
@@ -80,7 +81,9 @@ function drawParticles() {
 // function to apply gravity and move the particles
 function moveParticles() {
   for (let particle of theParticles) {
-    particle.dy += GRAVITY;
+    if (isGravity) {
+      particle.dy += GRAVITY;
+    }
     particle.x += particle.dx;
     particle.y += particle.dy;
   }
@@ -119,16 +122,19 @@ function wallCollisions() {
 //   return density;
 // }
 
-// function to pause the game
+// function to handle keyboard inputs
 function keyPressed() {
   if (keyCode === 32) { // toggles pause when spacebar is pressed
     isPaused = !isPaused;
+  }
+  if (keyCode === 71 && !isPaused) {
+    isGravity = !isGravity;
   }
 }
 
 // function for the different mouse inputs
 function mousePressed() {
-  if (isPaused === false) {
+  if (!isPaused) {
     for (let particle of theParticles) {
       if (mouseX > RECT_MARGIN && mouseX < width - RECT_MARGIN && mouseY > RECT_MARGIN && mouseY < height - RECT_MARGIN) { // can only use mouse inputs inside the rectangle
         if (mouseButton === LEFT) { // applies a random y force to every particle
