@@ -3,11 +3,16 @@
 // October 29th, 2025
 
 const CELL_SIZE = 20;
-const RENDER_ON_FRAME = 1;
+const RENDER_ON_FRAME = 2;
 let grid;
 let rows;
 let cols;
 let autoPlayIsOn = false;
+let gosper;
+
+function preload() {
+  gosper = loadJSON("gosper.json");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -55,6 +60,9 @@ function keyPressed() {
   }
   else if (key === "a") {
     autoPlayIsOn = !autoPlayIsOn;
+  }
+  else if (key === "g") {
+    grid = gosper;  
   }
 }
 
