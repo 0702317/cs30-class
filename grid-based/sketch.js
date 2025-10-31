@@ -6,33 +6,43 @@
 // - describe what you did to take this project "above and beyond"
 
 let grid;
+let cellSize;
 let input;
-let website;
-let isGenerated = false;
+let website = "www.wmcicompsci.ca";
 const GRID_SIZE = 29;
-const CELL_SIZE = 20;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  noStroke();
+  createCanvas(windowWidth * 0.85, windowHeight * 0.85);
+  if (width < height) {
+    cellSize = width/GRID_SIZE;
+  }
+  else {
+    cellSize = height/GRID_SIZE;
+  }
+  // noStroke();
   grid = generateEmptyQRCode(GRID_SIZE);
+  convertInput(website);
 }
 
 function draw() {
-  background(220);
-  if (isGenerated === false) {
-    input = createInput('');
-    input.position(width/2, height/2);
-    input.input(takeInput);
-  }
-  else {
-    displayQRCode();
-  }
+  background(255);
+  displayQRCode();
 }
 
 function takeInput() {
-  website = input.value();
-  console.log(website);
+
+}
+
+function convertInput(website) {
+  for (let i = 0; i < website.length; i++) {
+    // convert to ascii
+
+    // convert to binary
+    let byte;
+
+    // return byte
+    return byte;
+  }
 }
 
 function keyPressed() {
@@ -53,11 +63,10 @@ function displayQRCode() {
       else if (grid[y][x] === 0) {
         fill(255);
       }
-      square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+      square(x * cellSize, y * cellSize, cellSize);
     }
   }
 }
-
 
 function generateEmptyQRCode() {
   let newQRCode = [];
