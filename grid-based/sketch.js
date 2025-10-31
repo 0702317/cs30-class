@@ -6,18 +6,42 @@
 // - describe what you did to take this project "above and beyond"
 
 let grid;
+let input;
 let website;
-const GRID_SIZE = 76;
+let isGenerated = false;
+const GRID_SIZE = 29;
 const CELL_SIZE = 20;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  noStroke();
   grid = generateEmptyQRCode(GRID_SIZE);
 }
 
 function draw() {
   background(220);
-  displayQRCode();
+  if (isGenerated === false) {
+    input = createInput('');
+    input.position(width/2, height/2);
+    input.input(takeInput);
+  }
+  else {
+    displayQRCode();
+  }
+}
+
+function takeInput() {
+  website = input.value();
+  console.log(website);
+}
+
+function keyPressed() {
+  if (key === "ENTER") {
+    grid = generateQRCode(website);
+  }
+  if (key === "r") {
+    grid = generateEmptyQRCode();
+  }
 }
 
 function displayQRCode() {
@@ -34,14 +58,6 @@ function displayQRCode() {
   }
 }
 
-function keyPressed() {
-  if (key === "ENTER") {
-    generateQRCode(website);
-  }
-  if (key === "r") {
-    generateEmptyQRCode();
-  }
-}
 
 function generateEmptyQRCode() {
   let newQRCode = [];
