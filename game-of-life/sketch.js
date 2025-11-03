@@ -2,22 +2,23 @@
 // Graham Lindsay
 // October 29th, 2025
 
-const CELL_SIZE = 20;
+const CELL_SIZE = 30;
 const RENDER_ON_FRAME = 2;
 let grid;
-let rows;
-let cols;
+let rows = 29;
+let cols = 29;
 let autoPlayIsOn = false;
 let gosper;
 
 function preload() {
   gosper = loadJSON("gosper.json");
+  qr = loadJSON("empty-qr.json");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  cols = Math.floor(width/CELL_SIZE);
-  rows = Math.floor(height/CELL_SIZE);
+  // cols = Math.floor(width/CELL_SIZE);
+  // rows = Math.floor(height/CELL_SIZE);
   grid = generateRandomGrid(cols, rows);
 }
 
@@ -63,6 +64,9 @@ function keyPressed() {
   }
   else if (key === "g") {
     grid = gosper;  
+  }
+  else if (key === "q") {
+    grid = qr;  
   }
 }
 

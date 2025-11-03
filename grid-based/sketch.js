@@ -11,6 +11,10 @@ let input;
 let website = "www.wmcicompsci.ca";
 const GRID_SIZE = 29;
 
+function preload() {
+  emptyQR = loadJSON("empty-qr.json");
+}
+
 function setup() {
   createCanvas(windowWidth * 0.85, windowHeight * 0.85);
   if (width < height) {
@@ -57,26 +61,26 @@ function keyPressed() {
 function displayQRCode() {
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
-      if (grid[y][x] === 1) {
+      if (grid[y][x] === 0) {
+        fill(255);
+      }
+      else if (grid[y][x] === 1) {
         fill(0);
       }
-      else if (grid[y][x] === 0) {
-        fill(255);
+      else if (grid[y][x] === 2) {
+        fill(200);
       }
       square(x * cellSize, y * cellSize, cellSize);
     }
   }
 }
 
+// function to generate the base QR code with the constant data
 function generateEmptyQRCode() {
-  let newQRCode = [];
-  for (let y = 0; y < GRID_SIZE; y++) {
-    newQRCode.push([]);
-    for (let x = 0; x < GRID_SIZE; x++) {
-      newQRCode[y].push(0);
-    }
-  }
-  return newQRCode;
+  // set the grid to the json file
+  grid = emptyQR;
+
+  return grid;
 }
 
 function generateQRCode() {
