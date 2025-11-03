@@ -9,10 +9,10 @@ let rows = 29;
 let cols = 29;
 let autoPlayIsOn = false;
 let gosper;
+let qr;
 
 function preload() {
   gosper = loadJSON("gosper.json");
-  qr = loadJSON("empty-qr.json");
 }
 
 function setup() {
@@ -40,11 +40,17 @@ function mousePressed() {
 function toggleCell(x, y) {
   //make sure the cell you are toggling actually exists
   if (x >= 0 && x < cols && y >= 0 && y < rows) {
-    if (grid[y][x] === 1) {
+    if (grid[y][x] === 0) {
+      grid[y][x] = 3;
+    }
+    else if (grid[y][x] === 1) {
       grid[y][x] = 0;
     }
-    else if (grid[y][x] === 0) {
+    else if (grid[y][x] === 2) {
       grid[y][x] = 1;
+    }
+    else if (grid[y][x] === 3) {
+      grid[y][x] = 2;
     }
   }
 }
@@ -120,6 +126,12 @@ function displayGrid() {
       else if (grid[y][x] === 1) {
         fill(0);
       }
+      else if (grid[y][x] === 2) {
+        fill(140);
+      }
+      else if (grid[y][x] === 3) {
+        fill(0, 0, 255);
+      }
       square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
     }
   }
@@ -147,7 +159,7 @@ function generateEmptyGrid(cols, rows) {
   for (let y = 0; y < rows; y++) {
     newGrid.push([]);
     for (let x = 0; x < cols; x++) {
-      newGrid[y].push(0);
+      newGrid[y].push(2);
     }
   }
 
