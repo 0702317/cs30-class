@@ -13,6 +13,7 @@ let qr;
 
 function preload() {
   gosper = loadJSON("gosper.json");
+  qr = loadJSON("empty-qr.json");
 }
 
 function setup() {
