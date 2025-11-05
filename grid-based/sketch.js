@@ -6,8 +6,8 @@
 // - describe what you did to take this project "above and beyond"
 
 // Most of the theory behind this is from Thonky.com's QR code tutorial: https://www.thonky.com/qr-code-tutorial/
+// And this video: https://www.youtube.com/watch?v=w5ebcowAJD8
 
-let grid;
 let cellSize;
 let input;
 let website = "https://www.wmcicompsci.ca"; // temp
@@ -15,11 +15,11 @@ const GRID_SIZE = 29;
 const WHITE_PIXEL = 0;
 const BLACK_PIXEL = 1;
 const EMPTY_PIXEl = 2;
-const REQUIRED_BITS = 440; // this depends on QR version and error correction level, which is constant for this project.
+const REQUIRED_BITS = 440; // this depends on QR version and error correction level, which I am making constant for this project.
 
 // function to preload files.
 function preload() {
-  emptyQR = loadJSON("empty-qr.json");
+  emptyQR = loadJSON("empty-qr.json"); // this json has all the constant QR patterns, like the finder patterns, timing bits, and alignment pattern.
 }
 
 function setup() {
@@ -131,7 +131,6 @@ function findCharacterCount(website) {
 // function to make the string of bytes long enough to fit in the QR code.
 function bytePadding(binaryString) {
   let remainingBits = REQUIRED_BITS - binaryString.length; // calculates how many more bits need to be filled.
-  console.log(remainingBits);
 
   if (remainingBits <= 4) { // if there are 4 or less bits left to fill, it adds zeroes until it is the correct length (terminator bits).
     for (let i = 0; i < remainingBits; i++) {
@@ -140,6 +139,7 @@ function bytePadding(binaryString) {
   }
   else { // if there are more than 4 bits left to fill, it adds the terminator bits and a repeating pattern of padding bytes.
     binaryString = binaryString + "0000"; // terminator bits.
+
     remainingBits = REQUIRED_BITS - binaryString.length;
     let remainingBytes = remainingBits/8; // converts the remaining bits from bits to bytes.
 
@@ -153,16 +153,26 @@ function bytePadding(binaryString) {
     }
   }
 
-  console.log(binaryString);
   return binaryString;
 }
 
 // function to generate the error correction bits for the QR code.
 function calculateErrorCorrection(binaryString) {
+  // The math for this is done in Galois Feild 256.
 
+  // Step 1: Create polynomials.
+  // message polynomial: convert binaryString back to decimal, then use each number as the coefficient to x^i, where i is the length of the string. i also decreases by one for each term in the polynomial.
+  // generator polynomial for a type 3-L QR code: ɑ^0x^15 + ɑ^8x^14 + ɑ^183x^13 + ɑ^61x^12 + ɑ^91x^11 + ɑ^202x^10 + ɑ^37x^9 + ɑ^51x^8 + ɑ^58x^7 + ɑ^58x^6 + ɑ^237x^5 + ɑ^140x^4 + ɑ^124x^3 + ɑ^5x^2 + ɑ^99x + ɑ^105
+
+  // Step 2: Divide the message polynomial by the generator polynomial.
+  // multiply the generator polynomial so that it has the same first term as the message polynomial.
+  // XOR the result with the message polynomial.
+  // repeat n times.
+
+  // the coefficients of the remainder are the error correction bits.
 }
 
-// function to apply a mask to the QR code (I am only using mask 0).
+// function to apply a mask to the QR code (only mask 0).
 function applyMask(grid) {
-
+  
 }
