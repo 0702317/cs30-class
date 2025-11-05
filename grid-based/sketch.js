@@ -10,7 +10,7 @@
 let grid;
 let cellSize;
 let input;
-let website = "www.wmcicompsci.ca"; // temp
+let website = "https://www.wmcicompsci.ca"; // temp
 const GRID_SIZE = 29;
 const WHITE_PIXEL = 0;
 const BLACK_PIXEL = 1;
@@ -41,6 +41,7 @@ function draw() {
   displayQRCode();
 }
 
+// function to take user input
 function takeInput() {
   
 }
@@ -109,8 +110,7 @@ function createBinaryString(website) {
     binaryString = binaryString + byte.join("") + charCode; // add the binary character code to the remaining zeroes and then add the completed byte to the binary string.
   }
   
-  // bytePadding(binaryString);
-  // binaryString = bytePadding(binaryString);
+  binaryString = bytePadding(binaryString);
   console.log(binaryString);
   return binaryString;
 }
@@ -130,14 +130,30 @@ function findCharacterCount(website) {
 
 // function to make the string of bytes long enough to fit in the QR code.
 function bytePadding(binaryString) {
-  let remainingBits = REQUIRED_BITS - binaryString.length;
-  if (remainingBits <= 4) {
-    for (let i = 0; i < remainingBits.length; i++) {
-      binaryString = binaryString + 0;
-      remainingBits = REQUIRED_BITS - binaryString.length;
+  let remainingBits = REQUIRED_BITS - binaryString.length; // calculates how many more bits need to be filled.
+  console.log(remainingBits);
+
+  if (remainingBits <= 4) { // if there are 4 or less bits left to fill, it adds zeroes until it is the correct length (terminator bits).
+    for (let i = 0; i < remainingBits; i++) {
+      binaryString = binaryString + "0";
     }
   }
-  console.log(remainingBits);
+  else { // if there are more than 4 bits left to fill, it adds the terminator bits and a repeating pattern of padding bytes.
+    binaryString = binaryString + "0000"; // terminator bits.
+    remainingBits = REQUIRED_BITS - binaryString.length;
+    let remainingBytes = remainingBits/8; // converts the remaining bits from bits to bytes.
+
+    for (let i = 0; i < remainingBytes; i++) {
+      if (i % 2 === 0) {
+        binaryString = binaryString + "11101100"; // first padding byte, added for the even bytes.
+      }
+      else {
+        binaryString = binaryString + "00010001"; // second padding byte, added for the odd bytes.
+      }
+    }
+  }
+
+  console.log(binaryString);
   return binaryString;
 }
 
