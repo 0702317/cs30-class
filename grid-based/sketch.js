@@ -10,7 +10,7 @@
 
 let cellSize;
 let input;
-let website = "https://www.wmcicompsci.ca"; // temp
+let website;
 const GRID_SIZE = 29;
 const WHITE_PIXEL = 0;
 const BLACK_PIXEL = 1;
@@ -23,9 +23,9 @@ function preload() {
   emptyQR = loadJSON("empty-qr.json"); // this json has all the constant QR patterns, like the finder patterns, timing bits, and alignment pattern.
 }
 
+// setup function
 function setup() {
-  // noStroke();
-  createCanvas(windowWidth * 0.85, windowHeight * 0.85);
+  createCanvas(windowWidth * 0.80, windowHeight * 0.80);
   if (width < height) {
     cellSize = width/GRID_SIZE;
   }
@@ -33,10 +33,12 @@ function setup() {
     cellSize = height/GRID_SIZE;
   }
   grid = generateEmptyQRCode(GRID_SIZE);
-  generateQRCode(website);
+  
+  takeInput();
+  noStroke();
 }
 
-// draw loop.
+// draw loop
 function draw() {
   background(255);
   displayQRCode();
@@ -44,12 +46,10 @@ function draw() {
 
 // function to take user input
 function takeInput() {
-  
-}
-
-function keyPressed() {
-  if (key === "e") {
-    grid = generateQRCode(website);
+  let button = document.getElementById("generateButton"); // get the button element in the html code.
+  button.onclick = function() { // when the button is clicked, generate a QR code with the website that was entered.
+    website = document.getElementById("input").value;
+    generateQRCode(website);
   }
 }
 
