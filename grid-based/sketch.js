@@ -16,6 +16,7 @@ const WHITE_PIXEL = 0;
 const BLACK_PIXEL = 1;
 const EMPTY_PIXEl = 2;
 const REQUIRED_BITS = 440; // this depends on QR version and error correction level, which I am making constant for this project.
+const CODEWORD_AMOUNT = 55;
 
 // function to preload files.
 function preload() {
@@ -32,7 +33,7 @@ function setup() {
     cellSize = height/GRID_SIZE;
   }
   grid = generateEmptyQRCode(GRID_SIZE);
-  createBinaryString(website);
+  generateQRCode(website);
 }
 
 // draw loop.
@@ -82,15 +83,16 @@ function generateQRCode(website) {
   let binaryString = createBinaryString(website);
   let errorCorrectionBits = calculateErrorCorrection(binaryString);
   let finalDataString = binaryString + errorCorrectionBits;
+  console.log(binaryString);
+  console.log(errorCorrectionBits);
+  // for (let y = GRID_SIZE; y > 0; y--) {
+  //   for (let x = GRID_SIZE; x < 0; x--) {
 
-  for (let y = GRID_SIZE; y > 0; y--) {
-    for (let x = GRID_SIZE; x < 0; x--) {
-
-    }
-  }
+  //   }
+  // }
 
   // console.log(finalDataString);
-  return grid;
+  // return grid;
 }
 
 // function to generate a binary data string from the input text.
@@ -111,7 +113,6 @@ function createBinaryString(website) {
   }
   
   binaryString = bytePadding(binaryString);
-  console.log(binaryString);
   return binaryString;
 }
 
@@ -158,6 +159,13 @@ function bytePadding(binaryString) {
 
 // function to generate the error correction bits for the QR code.
 function calculateErrorCorrection(binaryString) {
+  // let codeWords = [];
+  // for (let i = 0; i < CODEWORD_AMOUNT; i++) {
+  //   for (let j = 0; j < 8; j++) {
+  //     codeWords.push(binaryString[]);
+  //   }
+  // }
+  // console.log(codeWords);
   // The math for this is done in Galois Feild 256.
 
   // Step 1: Create polynomials.
@@ -172,7 +180,7 @@ function calculateErrorCorrection(binaryString) {
   // the coefficients of the remainder are the error correction bits.
 }
 
-// function to apply a mask to the QR code (only mask 0).
+// function to apply a mask to the QR code (only mask 0)
 function applyMask(grid) {
   
 }
