@@ -50,6 +50,7 @@ function takeInput() {
   let button = document.getElementById("generateButton"); // get the button element in the html code.
   button.onclick = function() { // when the button is clicked, generate a QR code with the website that was entered.
     website = document.getElementById("input").value;
+    generateEmptyQRCode();
     generateQRCode(website);
   };
 }
@@ -84,77 +85,65 @@ function generateQRCode(website) {
   let binaryString = createBinaryString(website);
   let errorCorrectionBits = calculateErrorCorrection(binaryString);
   let finalDataString = binaryString; // + errorCorrectionBits;
-  let bitCount = 1;
-  
+  let bitCount = 0;
+
   console.log(finalDataString);
-  for (let y = GRID_SIZE - 1; y > 0; y--) {
-    for (let x = GRID_SIZE - 1; x > 0; x--) {
-      if (grid[y][x] === EMPTY_PIXEL) {
-        // grid[y][x] = 0;
-        bitCount++;
-        grid[y][x] = int(finalDataString[finalDataString.length-bitCount]);
-        console.log(int(finalDataString[finalDataString.length-bitCount]));
-      }
-      else {
-        grid[y][x] = grid[y][x];
-      }
+
+  for (let x = Math.floor(GRID_SIZE/2); x > 0; x--) { // split x into 2 wide columns.
+    if (x % 2 === 0) {
+      bitCount = upwardPlacement(finalDataString, bitCount, x*2);
+    }
+    else if (x % 2 !== 0) {
+      bitCount = downwardPlacement(finalDataString, bitCount, x*2); // if the column is odd, place bits downward.
     }
   }
-
-
-  // upwardPlacement(finalDataString);
-
-  // console.log(finalDataString);
-  // console.log(finalDataString[finalDataString.length-5]);
-  
-  // grid[28][28] = int(finalDataString[finalDataString.length-5]);
-
-  // for (let x = Math.floor(GRID_SIZE/2); x > 0; x--) { // split x into 2 wide columns.
-  //   if (x % 2 === 0) {
-  //     upwardPlacement(finalDataString, x*2); // if the column is even, place bits upward.
-  //   }
-  //   else if (x % 2 !== 0) {
-  //     downwardPlacement(finalDataString, x*2); // if the column is odd, place bits downward.
-  //   }
-  // }
 }
 
-function upwardPlacement(finalDataString, grid) {
-  let bitCount = 1;
-  for (let y = GRID_SIZE; y > 0; y--) {
-    grid[y][28] = int(finalDataString[finalDataString.length-bitCount]);
-    bitCount++;
-    grid[y][27] = int(finalDataString[finalDataString.length-bitCount]);
-    bitCount++;
+function upwardPlacement(finalDataString, bitCount, x) {
+  let y = 28;
+
+  while (y >= 0) {
+    if (grid[y][x] === EMPTY_PIXEL) {
+      grid[y][x] = int(finalDataString[bitCount]);;
+      bitCount++;
+    }
+    x--;
+    if (grid[y][x] === EMPTY_PIXEL) {
+      grid[y][x] = int(finalDataString[bitCount]);;
+      bitCount++;
+    }
+    y--;
+    x++;
   }
-  // for (let y = GRID_SIZE; y > 0; y--) {
-  //   if (grid[y][x] === EMPTY_PIXEL) {
-  //     grid[y][x] = int(finalDataString[finalDataString.length-bitCount]);
-  //     bitCount++;
-  //     x -= 1;
-  //     grid[y][x] = int(finalDataString[finalDataString.length-bitCount]);
-  //     bitCount++;
-  //     y -= 1;
-  //     x -= 1;
-  //   }
-  //   else {
-  //     y -= 1;
-  //   }
-  // }
-  // x -= 1;
-  // grid[y][x] = int(finalDataString[finalDataString.length-bitCount]);
-  // bitCount++;
-  // x -= 1;
+
+  return bitCount;
 }
 
-function downwardPlacement(finalDataString, x) {
+function downwardPlacement(finalDataString, bitCount, x) {
+  let y;
+  if (bitCount > 150) {
+    y = 0;
+  }
+  else if (bitCount < 150) {
+    y = 9;
+  }
+  while (y <= 28) {
+    if (grid[y][x] === EMPTY_PIXEL) {
+      grid[y][x] = int(finalDataString[bitCount]);;
+      bitCount++;
+    }
+    x--;
+    if (grid[y][x] === EMPTY_PIXEL) {
+      grid[y][x] = int(finalDataString[bitCount]);;
+      bitCount++;
+    }
+    y++;
+    x++;
+  }
 
+  return bitCount;
 }
 
-function plotData(x, y, finalDataString) {
-  let bitCount = 1;
-  grid[x][x] = int(finalDataString[finalDataString.length-bitCount]);
-}
 
 // function to generate a binary data string from the input text.
 function createBinaryString(website) {
