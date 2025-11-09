@@ -92,6 +92,7 @@ function generateEmptyQRCode() {
 function generateQRCode(website) {
   let binaryString = createBinaryString(website);
   let errorCorrectionBits = calculateErrorCorrection(binaryString);
+  calculateErrorCorrection(binaryString);
   let finalDataString = binaryString; // + errorCorrectionBits;
   let bitCount = 0; // a counter for the number of bits displayed.
 
@@ -219,6 +220,9 @@ function bytePadding(binaryString) {
 
 // function to generate the error correction bits for the QR code.
 function calculateErrorCorrection(binaryString) {
+  let messagePolynomial = generateMessagePolynomial(binaryString);
+  let generatorPolynomial; // ɑ^0x^15 + ɑ^8x^14 + ɑ^183x^13 + ɑ^61x^12 + ɑ^91x^11 + ɑ^202x^10 + ɑ^37x^9 + ɑ^51x^8 + ɑ^58x^7 + ɑ^58x^6 + ɑ^237x^5 + ɑ^140x^4 + ɑ^124x^3 + ɑ^5x^2 + ɑ^99x + ɑ^105
+
   // let codeWords = [];
   // for (let i = 0; i < CODEWORD_AMOUNT; i++) {
   //   for (let j = 0; j < 8; j++) {
@@ -239,6 +243,27 @@ function calculateErrorCorrection(binaryString) {
 
   // the coefficients of the remainder are the error correction bits.
 }
+
+function generateMessagePolynomial(binaryString) {
+  let codeWords = [];
+  let messagePolynomial;
+  let x;
+
+  for (let i = 0; i < binaryString.length / 8; i++) { // split the binary string back into bytes and store it in an array.
+    codeWords.push(binaryString.substring(i*8, i*8 + 8));
+  }
+
+  for (let i = 0; i < codeWords.length; i++) { // convert each byte back into decimal.
+    codeWords[i] = parseInt(codeWords[i], 2);
+  }
+
+  for (let i = 0; i < codeWords.length; i ++) {
+
+  }
+
+  console.log(codeWords);
+}
+
 
 // function to apply a mask to the QR code (only mask 0).
 function applyMask() {
