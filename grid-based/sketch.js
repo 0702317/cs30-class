@@ -45,7 +45,7 @@ function draw() {
   displayQRCode();
 }
 
-// function to take user input
+// function to take user input - this code is from this video: https://www.youtube.com/watch?v=JeXqaKeJSRI 
 function takeInput() {
   let button = document.getElementById("generateButton"); // get the button element in the html code.
   button.onclick = function() { // when the button is clicked, generate a QR code with the website that was entered.
@@ -85,60 +85,60 @@ function generateQRCode(website) {
   let binaryString = createBinaryString(website);
   let errorCorrectionBits = calculateErrorCorrection(binaryString);
   let finalDataString = binaryString; // + errorCorrectionBits;
-  let bitCount = 0;
+  let bitCount = 0; // a counter for the number of bits displayed.
 
   console.log(finalDataString);
 
   for (let x = Math.floor(GRID_SIZE/2); x > 0; x--) { // split x into 2 wide columns.
     if (x % 2 === 0) {
-      bitCount = upwardPlacement(finalDataString, bitCount, x*2);
+      bitCount = upwardPlacement(finalDataString, bitCount, x*2); // place bits in an upward column if x is even, and then update bitCount.
     }
     else if (x % 2 !== 0) {
-      bitCount = downwardPlacement(finalDataString, bitCount, x*2); // if the column is odd, place bits downward.
+      bitCount = downwardPlacement(finalDataString, bitCount, x*2); // place bits in an downward column if x is odd, and then update bitCount.
     }
   }
 }
 
+// function for placing bits in an upward column.
 function upwardPlacement(finalDataString, bitCount, x) {
   let y = 28;
 
-  while (y >= 0) {
+  while (y >= 0) { // places the data bits in a zigzag pattern going upwards.
     if (grid[y][x] === EMPTY_PIXEL) {
-      grid[y][x] = int(finalDataString[bitCount]);;
+      grid[y][x] = int(finalDataString[bitCount]); // sets the current location on the grid to the corresponding data bit.
+      bitCount++; // update bitCount.
+    }
+    x--; // move left.
+    if (grid[y][x] === EMPTY_PIXEL) { // place another bit.
+      grid[y][x] = int(finalDataString[bitCount]);
       bitCount++;
     }
-    x--;
-    if (grid[y][x] === EMPTY_PIXEL) {
-      grid[y][x] = int(finalDataString[bitCount]);;
-      bitCount++;
-    }
-    y--;
-    x++;
+    y--; // move up.
+    x++; // move right.
   }
 
   return bitCount;
 }
 
+// function for placing bits in an downward column.
 function downwardPlacement(finalDataString, bitCount, x) {
-  let y;
-  if (bitCount > 150) {
-    y = 0;
-  }
-  else if (bitCount < 150) {
-    y = 9;
-  }
-  while (y <= 28) {
+  let y = 0;
+
+  while (y <= 28) { // places the data bits in a zigzag pattern going downwards.
+    if (x === 6) { // skips over the timing pattern on x = 6.
+      x--;
+    }
     if (grid[y][x] === EMPTY_PIXEL) {
-      grid[y][x] = int(finalDataString[bitCount]);;
+      grid[y][x] = int(finalDataString[bitCount]); // sets the current location on the grid to the corresponding data bit.
+      bitCount++; // update bitCount.
+    }
+    x--; // move left.
+    if (grid[y][x] === EMPTY_PIXEL) { // place another bit.
+      grid[y][x] = int(finalDataString[bitCount]); 
       bitCount++;
     }
-    x--;
-    if (grid[y][x] === EMPTY_PIXEL) {
-      grid[y][x] = int(finalDataString[bitCount]);;
-      bitCount++;
-    }
-    y++;
-    x++;
+    y++; // move down.
+    x++; // move right.
   }
 
   return bitCount;
