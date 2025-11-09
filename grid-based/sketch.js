@@ -16,6 +16,8 @@ const GRID_SIZE = 29;
 const WHITE_PIXEL = 0;
 const BLACK_PIXEL = 1;
 const EMPTY_PIXEL = 2;
+const RESERVED_WHITE_PIXEL = 3;
+const RESERVED_BLACK_PIXEL = 4;
 const REQUIRED_BITS = 440; // this depends on QR version and error correction level, which I am making constant for this project.
 const CODEWORD_AMOUNT = 55;
 
@@ -26,7 +28,7 @@ function preload() {
 
 // setup function
 function setup() {
-  createCanvas(windowWidth * 0.80, windowHeight * 0.80);
+  createCanvas(windowWidth * 0.70, windowHeight * 0.70);
   if (width < height) {
     cellSize = width/GRID_SIZE;
   }
@@ -68,6 +70,12 @@ function displayQRCode() {
       else if (grid[y][x] === EMPTY_PIXEL) {
         fill(150);
       }
+      else if (grid[y][x] === RESERVED_WHITE_PIXEL) {
+        fill(255);
+      }
+      else if (grid[y][x] === RESERVED_BLACK_PIXEL) {
+        fill(0);
+      }
       square(x * cellSize, y * cellSize, cellSize);
     }
   }
@@ -89,7 +97,7 @@ function generateQRCode(website) {
 
   console.log(finalDataString);
 
-  for (let x = Math.floor(GRID_SIZE/2); x > 0; x--) { // split x into 2 wide columns.
+  for (let x = Math.floor(GRID_SIZE/2); x >= 0; x--) { // split x into 2 wide columns.
     if (x % 2 === 0) {
       bitCount = upwardPlacement(finalDataString, bitCount, x*2); // place bits in an upward column if x is even, and then update bitCount.
     }
@@ -97,6 +105,8 @@ function generateQRCode(website) {
       bitCount = downwardPlacement(finalDataString, bitCount, x*2); // place bits in an downward column if x is odd, and then update bitCount.
     }
   }
+
+  applyMask(); // applies mask 0 to try and break up clusters of pixels.
 }
 
 // function for placing bits in an upward column.
@@ -230,7 +240,18 @@ function calculateErrorCorrection(binaryString) {
   // the coefficients of the remainder are the error correction bits.
 }
 
-// function to apply a mask to the QR code (only mask 0)
-function applyMask(grid) {
-  
+// function to apply a mask to the QR code (only mask 0).
+function applyMask() {
+  for (let y = 0; y < GRID_SIZE; y++) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      if ((x + y) % 2 === 0) { // only change even pixels to invert pixels in a checkerboard pattern.
+        if (grid[y][x] === WHITE_PIXEL) { // flip pixel from white to black.
+          grid[y][x] = BLACK_PIXEL;
+        }
+        else if (grid[y][x] === BLACK_PIXEL) { // flip pixel from black to white.
+          grid[y][x] = WHITE_PIXEL;
+        }
+      }
+    }
+  }
 }
