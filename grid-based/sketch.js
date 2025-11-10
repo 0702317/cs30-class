@@ -37,8 +37,8 @@ function setup() {
   }
   grid = generateEmptyQRCode(GRID_SIZE);
   
-  takeInput();
   noStroke();
+  takeInput();
 }
 
 // draw loop
@@ -52,7 +52,7 @@ function takeInput() {
   let button = document.getElementById("generateButton"); // get the button element in the html code.
   button.onclick = function() { // when the button is clicked, generate a QR code with the website that was entered.
     website = document.getElementById("input").value;
-    generateEmptyQRCode();
+    grid = generateEmptyQRCode();
     generateQRCode(website);
   };
 }
@@ -92,11 +92,8 @@ function generateEmptyQRCode() {
 function generateQRCode(website) {
   let binaryString = createBinaryString(website);
   let errorCorrectionBits = calculateErrorCorrection(binaryString);
-  calculateErrorCorrection(binaryString);
   let finalDataString = binaryString; // + errorCorrectionBits;
   let bitCount = 0; // a counter for the number of bits displayed.
-
-  console.log(finalDataString);
 
   for (let x = Math.floor(GRID_SIZE/2); x >= 0; x--) { // split x into 2 wide columns.
     if (x % 2 === 0) {
@@ -221,8 +218,10 @@ function bytePadding(binaryString) {
 // function to generate the error correction bits for the QR code.
 function calculateErrorCorrection(binaryString) {
   let messagePolynomial = generateMessagePolynomial(binaryString);
-  let generatorPolynomial; // ɑ^0x^15 + ɑ^8x^14 + ɑ^183x^13 + ɑ^61x^12 + ɑ^91x^11 + ɑ^202x^10 + ɑ^37x^9 + ɑ^51x^8 + ɑ^58x^7 + ɑ^58x^6 + ɑ^237x^5 + ɑ^140x^4 + ɑ^124x^3 + ɑ^5x^2 + ɑ^99x + ɑ^105
+  let generatorPolynomial = "ɑ^0x^15 + ɑ^8x^14 + ɑ^183x^13 + ɑ^61x^12 + ɑ^91x^11 + ɑ^202x^10 + ɑ^37x^9 + ɑ^51x^8 + ɑ^58x^7 + ɑ^58x^6 + ɑ^237x^5 + ɑ^140x^4 + ɑ^124x^3 + ɑ^5x^2 + ɑ^99x + ɑ^105";
 
+  console.log(messagePolynomial);
+  console.log(generatorPolynomial);
   // let codeWords = [];
   // for (let i = 0; i < CODEWORD_AMOUNT; i++) {
   //   for (let j = 0; j < 8; j++) {
@@ -246,7 +245,7 @@ function calculateErrorCorrection(binaryString) {
 
 function generateMessagePolynomial(binaryString) {
   let codeWords = [];
-  let messagePolynomial;
+  let messagePolynomial = "";
   let x;
 
   for (let i = 0; i < binaryString.length / 8; i++) { // split the binary string back into bytes and store it in an array.
@@ -257,11 +256,12 @@ function generateMessagePolynomial(binaryString) {
     codeWords[i] = parseInt(codeWords[i], 2);
   }
 
-  for (let i = 0; i < codeWords.length; i ++) {
-
+  for (let i = 0; i < codeWords.length; i++) {
+    messagePolynomial = messagePolynomial + (codeWords[i].toString() + "x" + "^" + (codeWords.length - i).toString() + " " + "+" + " ");
   }
 
-  console.log(codeWords);
+  messagePolynomial = messagePolynomial + codeWords[codeWords.length-1];
+  return messagePolynomial;
 }
 
 
