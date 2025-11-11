@@ -220,26 +220,23 @@ function calculateErrorCorrection(binaryString) {
   let errorCorrectionBits = "";
   let messagePolynomial = generateMessagePolynomial(binaryString);
   let generatorPolynomial = [1, 29, 196, 111, 163, 112, 74, 10, 105, 105, 139, 132, 151, 32, 134, 26]; // this is the generator polynomial, which is constant for this QR type.
-  let codeWords = generateECC(messagePolynomial, generatorPolynomial);
-  // [18, 200, 193, 196, 114, 188, 110, 208, 172, 165, 182, 176, 49, 7, 98];
+  let codeWords = [18, 200, 193, 196, 114, 188, 110, 208, 172, 165, 182, 176, 49, 7, 98]; // temp
+  // let codeWords = generateECC(messagePolynomial, generatorPolynomial);
 
-  // 1: multiply the message polynomial by x^15
-  // 2: multiply generator polynomial to have same exponent
-  // 3: repeat a division 55 times to get a remainder with 15 coefficients which are the error correction bits.
-
+  
   for (let i = 0; i < codeWords.length; i++) {
     let byte = [0, 0, 0, 0, 0, 0, 0, 0];
     let charCode = codeWords[i].toString(2); 
     codeWords[i] = charCode;
-
+    
     for (let j = 0; j < charCode.length; j++) {
       byte.pop(); 
     }
-
+    
     codeWords[i] = byte.join("") + codeWords[i];
     
   }
-
+  
   for (let i = 0; i < codeWords.length; i++) {
     errorCorrectionBits = errorCorrectionBits + codeWords[i];
   }
@@ -249,25 +246,25 @@ function calculateErrorCorrection(binaryString) {
 
 function generateMessagePolynomial(binaryString) {
   let messagePolynomial = [];
-
+  
   for (let i = 0; i < binaryString.length / 8; i++) { // split the binary string back into bytes and store it in an array.
     messagePolynomial.push(binaryString.substring(i*8, i*8 + 8));
   }
-
+  
   for (let i = 0; i < messagePolynomial.length; i++) { // convert each byte back into decimal.
     messagePolynomial[i] = parseInt(messagePolynomial[i], 2);
   }
-
+  
   return messagePolynomial;
 }
 
 function generateECC(messagePolynomial, generatorPolynomial) {
   let codeWords = [];
-
+  
   for (let i = 0; i < 15; i++) { // multiply the message polynomial by x15.
     messagePolynomial.push(0);
   }
-
+  
   for (let i = 0; i < 54; i++) { // multiply the generator polynomial by x54 so that the exponents are the same between the message polynomial and the generator polynomial.
     generatorPolynomial.push(0);
   }
@@ -279,7 +276,12 @@ function generateECC(messagePolynomial, generatorPolynomial) {
 }
 
 function dividePolynomials(messagePolynomial, generatorPolynomial) { 
-
+  // repeat a division 55 times to get a remainder with 15 coefficients which are the error correction bits.
+  let remainder;
+  
+  for (let i = 0; i < 55; i++) {
+    
+  }
 }
 
 
