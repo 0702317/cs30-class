@@ -92,7 +92,7 @@ function generateEmptyQRCode() {
 function generateQRCode(website) {
   let binaryString = createBinaryString(website);
   let errorCorrectionBits = calculateErrorCorrection(binaryString);
-  let finalDataString = binaryString; // + errorCorrectionBits;
+  let finalDataString = binaryString + errorCorrectionBits; // + errorCorrectionBits;
   let bitCount = 0; // a counter for the number of bits displayed.
 
   for (let x = Math.floor(GRID_SIZE/2); x >= 0; x--) { // split x into 2 wide columns.
@@ -217,51 +217,69 @@ function bytePadding(binaryString) {
 
 // function to generate the error correction bits for the QR code.
 function calculateErrorCorrection(binaryString) {
+  let errorCorrectionBits = "";
   let messagePolynomial = generateMessagePolynomial(binaryString);
-  let generatorPolynomial = "ɑ^0x^15 + ɑ^8x^14 + ɑ^183x^13 + ɑ^61x^12 + ɑ^91x^11 + ɑ^202x^10 + ɑ^37x^9 + ɑ^51x^8 + ɑ^58x^7 + ɑ^58x^6 + ɑ^237x^5 + ɑ^140x^4 + ɑ^124x^3 + ɑ^5x^2 + ɑ^99x + ɑ^105";
+  let generatorPolynomial = [1, 29, 196, 111, 163, 112, 74, 10, 105, 105, 139, 132, 151, 32, 134, 26]; // this is the generator polynomial, which is constant for this QR type.
+  let codeWords = generateECC(messagePolynomial, generatorPolynomial);
+  // [18, 200, 193, 196, 114, 188, 110, 208, 172, 165, 182, 176, 49, 7, 98];
 
-  console.log(messagePolynomial);
-  console.log(generatorPolynomial);
-  // let codeWords = [];
-  // for (let i = 0; i < CODEWORD_AMOUNT; i++) {
-  //   for (let j = 0; j < 8; j++) {
-  //     codeWords.push(binaryString[]);
-  //   }
-  // }
-  // console.log(codeWords);
-  // The math for this is done in Galois Feild 256.
+  // 1: multiply the message polynomial by x^15
+  // 2: multiply generator polynomial to have same exponent
+  // 3: repeat a division 55 times to get a remainder with 15 coefficients which are the error correction bits.
 
-  // Step 1: Create polynomials.
-  // message polynomial: convert binaryString back to decimal, then use each number as the coefficient to x^i, where i is the length of the string. i also decreases by one for each term in the polynomial.
-  // generator polynomial for a type 3-L QR code: ɑ^0x^15 + ɑ^8x^14 + ɑ^183x^13 + ɑ^61x^12 + ɑ^91x^11 + ɑ^202x^10 + ɑ^37x^9 + ɑ^51x^8 + ɑ^58x^7 + ɑ^58x^6 + ɑ^237x^5 + ɑ^140x^4 + ɑ^124x^3 + ɑ^5x^2 + ɑ^99x + ɑ^105
+  for (let i = 0; i < codeWords.length; i++) {
+    let byte = [0, 0, 0, 0, 0, 0, 0, 0];
+    let charCode = codeWords[i].toString(2); 
+    codeWords[i] = charCode;
 
-  // Step 2: Divide the message polynomial by the generator polynomial.
-  // multiply the generator polynomial so that it has the same first term as the message polynomial.
-  // XOR the result with the message polynomial.
-  // repeat n times.
+    for (let j = 0; j < charCode.length; j++) {
+      byte.pop(); 
+    }
 
-  // the coefficients of the remainder are the error correction bits.
-}
-
-function generateMessagePolynomial(binaryString) {
-  let codeWords = [];
-  let messagePolynomial = "";
-  let x;
-
-  for (let i = 0; i < binaryString.length / 8; i++) { // split the binary string back into bytes and store it in an array.
-    codeWords.push(binaryString.substring(i*8, i*8 + 8));
-  }
-
-  for (let i = 0; i < codeWords.length; i++) { // convert each byte back into decimal.
-    codeWords[i] = parseInt(codeWords[i], 2);
+    codeWords[i] = byte.join("") + codeWords[i];
+    
   }
 
   for (let i = 0; i < codeWords.length; i++) {
-    messagePolynomial = messagePolynomial + (codeWords[i].toString() + "x" + "^" + (codeWords.length - i).toString() + " " + "+" + " ");
+    errorCorrectionBits = errorCorrectionBits + codeWords[i];
+  }
+  
+  return errorCorrectionBits;
+}
+
+function generateMessagePolynomial(binaryString) {
+  let messagePolynomial = [];
+
+  for (let i = 0; i < binaryString.length / 8; i++) { // split the binary string back into bytes and store it in an array.
+    messagePolynomial.push(binaryString.substring(i*8, i*8 + 8));
   }
 
-  messagePolynomial = messagePolynomial + codeWords[codeWords.length-1];
+  for (let i = 0; i < messagePolynomial.length; i++) { // convert each byte back into decimal.
+    messagePolynomial[i] = parseInt(messagePolynomial[i], 2);
+  }
+
   return messagePolynomial;
+}
+
+function generateECC(messagePolynomial, generatorPolynomial) {
+  let codeWords = [];
+
+  for (let i = 0; i < 15; i++) { // multiply the message polynomial by x15.
+    messagePolynomial.push(0);
+  }
+
+  for (let i = 0; i < 54; i++) { // multiply the generator polynomial by x54 so that the exponents are the same between the message polynomial and the generator polynomial.
+    generatorPolynomial.push(0);
+  }
+  
+  codeWords = dividePolynomials(messagePolynomial, generatorPolynomial);
+  console.log(messagePolynomial);
+  console.log(generatorPolynomial);
+  return codeWords;
+}
+
+function dividePolynomials(messagePolynomial, generatorPolynomial) { 
+
 }
 
 
