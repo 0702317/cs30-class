@@ -219,11 +219,11 @@ function bytePadding(binaryString) {
 function calculateErrorCorrection(binaryString) {
   let errorCorrectionBits = "";
   let messagePolynomial = generateMessagePolynomial(binaryString);
-  let generatorPolynomial = [1, 29, 196, 111, 163, 112, 74, 10, 105, 105, 139, 132, 151, 32, 134, 26]; // this is the generator polynomial, which is constant for this QR type.
-  let codeWords = [18, 200, 193, 196, 114, 188, 110, 208, 172, 165, 182, 176, 49, 7, 98]; // temp
-  // let codeWords = generateECC(messagePolynomial, generatorPolynomial);
+  let generatorPolynomial = [0, 8, 183, 61, 91, 202, 37, 51, 58, 58, 237, 140, 124, 5, 99, 105]; // this is the generator polynomial, which is constant for this QR type.
+  // let codeWords = [18, 200, 193, 196, 114, 188, 110, 208, 172, 165, 182, 176, 49, 7, 98]; // temp
+  // [1, 29, 196, 111, 163, 112, 74, 10, 105, 105, 139, 132, 151, 32, 134, 26];
+  let codeWords = generateECC(messagePolynomial, generatorPolynomial); 
 
-  
   for (let i = 0; i < codeWords.length; i++) {
     let byte = [0, 0, 0, 0, 0, 0, 0, 0];
     let charCode = codeWords[i].toString(2); 
@@ -234,7 +234,6 @@ function calculateErrorCorrection(binaryString) {
     }
     
     codeWords[i] = byte.join("") + codeWords[i];
-    
   }
   
   for (let i = 0; i < codeWords.length; i++) {
@@ -260,28 +259,75 @@ function generateMessagePolynomial(binaryString) {
 
 function generateECC(messagePolynomial, generatorPolynomial) {
   let codeWords = [];
-  
-  for (let i = 0; i < 15; i++) { // multiply the message polynomial by x15.
-    messagePolynomial.push(0);
+  console.log(generatorPolynomial);
+  for (let i = 0; i < 1; i++) { // repeat the division 55 times to get a remainder with 15 coefficients which are the error correction bits.
+    for (let j = 0; j < generatorPolynomial.length; j++) {
+      generatorPolynomial[j] = convertToInteger(generatorPolynomial[j] + convertToExponent(messagePolynomial[0]));
+      messagePolynomial[j] = messagePolynomial[j] ^ generatorPolynomial[j];
+    }
+
+    messagePolynomial.splice(0, 1);
+
   }
   
-  for (let i = 0; i < 54; i++) { // multiply the generator polynomial by x54 so that the exponents are the same between the message polynomial and the generator polynomial.
-    generatorPolynomial.push(0);
-  }
-  
-  codeWords = dividePolynomials(messagePolynomial, generatorPolynomial);
   console.log(messagePolynomial);
   console.log(generatorPolynomial);
   return codeWords;
 }
 
-function dividePolynomials(messagePolynomial, generatorPolynomial) { 
-  // repeat a division 55 times to get a remainder with 15 coefficients which are the error correction bits.
-  let remainder;
+// the convertToExponent and convertToInteger functions are NOT MY CODE, I took them from https://github.com/Nika03/log-antilog-table/blob/main/index.js to save time because I was struggling to figure out how to do this.
+function convertToExponent(int) {
+  let exp = [];
+  let integer = 0;
+  let xored;
+  let pow = 1;
   
-  for (let i = 0; i < 55; i++) {
-    
-  }
+  for (let i = 0; i < 256; i++) {
+    if (integer <= 256 && i <= 8) {
+        integer = 2 ** i;
+    }
+
+    if (i > 8 && integer <= 255) {
+        integer = xored * 2 ** pow;
+        pow++;
+    }
+
+    if (integer > 255) {
+        integer = integer ^ 285;
+        xored = integer;
+        pow = 1;
+    }
+    exp.push(integer);
+  } 
+
+  return exp.findIndex((element) => element == int);
+}
+
+function convertToInteger(exponentToFind) {
+  let exp = [];
+  let integer = 0;
+  let xored;
+  let pow = 1;
+  
+  for (let i = 0; i < 256; i++) {
+    if (integer <= 256 && i <= 8) {
+        integer = 2 ** i;
+    }
+
+    if (i > 8 && integer <= 255) {
+        integer = xored * 2 ** pow;
+        pow++;
+    }
+
+    if (integer > 255) {
+        integer = integer ^ 285;
+        xored = integer;
+        pow = 1;
+    }
+    exp.push(integer);
+  } 
+
+  return exp[exponentToFind];
 }
 
 
