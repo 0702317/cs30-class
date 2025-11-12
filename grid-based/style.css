@@ -14,9 +14,9 @@ body {
 #inputBox {
   position:absolute;
   text-align: center;
-  font-size: larger;
-  top: 10%;
-  left: -25%;
+  font-size: x-large;
+  top: 20%;
+  left: -30%;
   transform: translate(-50%, -50%);
 }
 
