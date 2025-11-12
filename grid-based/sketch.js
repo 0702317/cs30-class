@@ -222,6 +222,7 @@ function calculateErrorCorrection(binaryString) {
   let generatorPolynomial = [1, 29, 196, 111, 163, 112, 74, 10, 105, 105, 139, 132, 151, 32, 134, 26]; // this is the generator polynomial, which is constant for this QR type.
   // let codeWords = [18, 200, 193, 196, 114, 188, 110, 208, 172, 165, 182, 176, 49, 7, 98]; // temp
   // [0, 8, 183, 61, 91, 202, 37, 51, 58, 58, 237, 140, 124, 5, 99, 105]
+
   let codeWords = generateECC(messagePolynomial, generatorPolynomial); 
 
   console.log(codeWords);
@@ -264,19 +265,25 @@ function generateMessagePolynomial(binaryString) {
 }
 
 function generateECC(messagePolynomial, generatorPolynomial) {
-  let codeWords = [];
-  console.log(messagePolynomial);
-  console.log(generatorPolynomial);
+  
   for (let i = 0; i < 55; i++) { // repeat the division 55 times to get a remainder with 15 coefficients which are the error correction bits.
     for (let j = 0; j < generatorPolynomial.length; j++) {
-      generatorPolynomial[j] = convertToInteger(convertToExponent(generatorPolynomial[j]) + convertToExponent(messagePolynomial[0]));
-      messagePolynomial[j] = messagePolynomial[j] ^ generatorPolynomial[j];
-    }
+      generatorPolynomial[j] = convertToExponent(generatorPolynomial[j]) + convertToExponent(messagePolynomial[0]);
+      if (generatorPolynomial[j] > 255) {
+        generatorPolynomial[j] = generatorPolynomial[j] % 255;
+      }
+      generatorPolynomial[j] = convertToInteger(generatorPolynomial[j]);
 
+      messagePolynomial[j] = messagePolynomial[j] ^ generatorPolynomial[j]; 
+    }
     messagePolynomial.splice(0, 1);
   }
   
   console.log(messagePolynomial);
+  console.log(generatorPolynomial);
+
+
+
   return messagePolynomial;
 }
 
